@@ -20,11 +20,20 @@ A simple static web app to help Arti track exercise sets with reps, weight, note
 - `styles.css` — layout and styling
 - `script.js` — form handling, storage, and rendering
 
+- The app now includes a 3-day full body program with a 6-10 rep range for main lifts.
+- It remembers the last weight used for each exercise so Arti can increase load safely over time.
+
 ## Usage
 
 1. Open `index.html` in a browser.
 2. Fill in the exercise details and click **Save Entry**.
 3. Use the exercise log to review workouts and open linked videos.
+
+### How to use the program
+
+1. Choose Day 1, Day 2, or Day 3 from the program panel.
+2. Load an exercise into the tracker, then enter the weight and the actual reps completed.
+3. Save the entry to keep the workout history and update the remembered last weight.
 
 ## GitHub Pages Hosting
 
