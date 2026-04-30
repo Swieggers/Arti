@@ -16,16 +16,32 @@
       </div>
     </header>
 
+    <section class="panel" id="program-panel">
+      <div class="panel-heading">
+        <div>
+          <h2>3-Day Full Body Program</h2>
+          <p class="panel-copy">Use the same full-body plan for every workout. Target 6–10 reps and increase the weight when your form stays good.</p>
+        </div>
+      </div>
+      <div class="day-buttons" role="tablist">
+        <button type="button" class="secondary-button program-day active" data-day="1">Day 1</button>
+        <button type="button" class="secondary-button program-day" data-day="2">Day 2</button>
+        <button type="button" class="secondary-button program-day" data-day="3">Day 3</button>
+      </div>
+      <div id="program-details" class="program-details"></div>
+    </section>
+
     <section class="panel">
-      <h2>Add an Exercise Entry</h2>
+      <h2>Log an Exercise</h2>
+      <p class="form-helper">Target 6–10 reps. Enter the weight and the actual reps you completed. The app remembers the last weight for each exercise.</p>
       <form id="exercise-form" class="exercise-form">
         <div class="field-row">
           <label for="exercise-name">Exercise</label>
-          <input id="exercise-name" name="exerciseName" type="text" placeholder="e.g. Squats" required />
+          <input id="exercise-name" name="exerciseName" type="text" placeholder="e.g. Goblet Squat" required />
         </div>
         <div class="field-row">
-          <label for="reps">Reps</label>
-          <input id="reps" name="reps" type="number" min="1" placeholder="12" required />
+          <label for="reps">Completed reps</label>
+          <input id="reps" name="reps" type="number" min="1" placeholder="8" required />
         </div>
         <div class="field-row">
           <label for="weight">Weight (kg)</label>
@@ -33,7 +49,7 @@
         </div>
         <div class="field-row">
           <label for="video-url">Video URL</label>
-      <p class="form-helper">Target 6–10 reps. Enter the weight and the actual reps you completed. The app remembers the last weight for each exercise.</p>
+          <input id="video-url" name="videoUrl" type="url" placeholder="https://" />
         </div>
         <div class="field-row">
           <label for="notes">Notes</label>
