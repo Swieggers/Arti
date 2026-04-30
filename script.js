@@ -1,12 +1,72 @@
 const STORAGE_KEY = 'arti-exercise-log';
+const WEIGHT_KEY = 'arti-exercise-last-weight';
 const form = document.getElementById('exercise-form');
 const exerciseList = document.getElementById('exercise-list');
 const clearButton = document.getElementById('clear-button');
+const programButtons = document.querySelectorAll('.program-day');
+const programDetails = document.getElementById('program-details');
+const exerciseNameInput = document.getElementById('exercise-name');
+const repsInput = document.getElementById('reps');
+const weightInput = document.getElementById('weight');
+const videoUrlInput = document.getElementById('video-url');
+const notesInput = document.getElementById('notes');
 
 let exercises = [];
+let lastWeights = {};
+let selectedDay = 1;
+
+const programDays = {
+  1: [
+    {
+      name: 'Goblet Squat (use bench if needed)',
+      target: '3 sets x 6-10 reps',
+      notes: 'Keep chest upright and use a bench for safety if needed.',
+      loggable: true,
+    },
+    {
+      name: 'Dumbbell Bench Press',
+      target: '3 sets x 6-10 reps',
+      notes: 'Choose a comfortable dumbbell weight and focus on control.',
+      loggable: true,
+    },
+    {
+      name: 'Lat Pulldown or Row',
+      target: '3 sets x 6-10 reps',
+      notes: 'Use what is available in the gym and keep form slow and steady.',
+      loggable: true,
+    },
+    {
+      name: 'Seated Shoulder Press',
+      target: 'Superset with 3 sets x 6-10 reps',
+      notes: 'Press with a controlled motion, then move immediately to curls.',
+      loggable: true,
+    },
+    {
+      name: 'Bicep Curls',
+      target: 'Superset with 3 sets x 6-10 reps',
+      notes: 'Keep elbows locked in place and avoid swinging the weight.',
+      loggable: true,
+    },
+    {
+      name: 'Incline Treadmill Walk',
+      target: '15-30 minutes at speed 5 and 5% incline',
+      notes: 'Finish every workout with a steady walk to support conditioning.',
+      loggable: false,
+    },
+  ],
+  2: [],
+  3: [],
+};
+
+programDays[2] = JSON.parse(JSON.stringify(programDays[1]));
+programDays[3] = JSON.parse(JSON.stringify(programDays[1]));
 
 function saveExercises() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
+}
+
+function saveLastWeights() {
+  localStorage.setItem(WEIGHT_KEY, JSON.stringify(lastWeights));
 }
 
 function loadExercises() {
@@ -14,9 +74,86 @@ function loadExercises() {
   exercises = saved ? JSON.parse(saved) : [];
 }
 
+function loadLastWeights() {
+  const saved = localStorage.getItem(WEIGHT_KEY);
+  lastWeights = saved ? JSON.parse(saved) : {};
+}
+
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderProgram() {
+  programDetails.innerHTML = '';
+  const exercisesForDay = programDays[selectedDay];
+
+  exercisesForDay.forEach((exercise) => {
+    const card = document.createElement('article');
+    card.className = 'exercise-card';
+
+    const header = document.createElement('div');
+    header.className = 'exercise-card-header';
+    const title = document.createElement('h3');
+    title.className = 'exercise-card-title';
+    title.textContent = exercise.name;
+    const meta = document.createElement('span');
+    meta.className = 'exercise-card-meta';
+    meta.textContent = exercise.target;
+
+    header.append(title, meta);
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'exercise-card-body';
+
+    if (exercise.notes) {
+      const notes = document.createElement('p');
+      notes.textContent = exercise.notes;
+      body.appendChild(notes);
+    }
+
+    if (lastWeights[exercise.name]) {
+      const lastUsed = document.createElement('p');
+      lastUsed.textContent = `Last weight: ${lastWeights[exercise.name]} kg`;
+      body.appendChild(lastUsed);
+    }
+
+    card.appendChild(body);
+
+    const actions = document.createElement('div');
+    actions.className = 'exercise-card-actions';
+
+    const actionButton = document.createElement('button');
+    actionButton.className = 'secondary-button';
+    actionButton.type = 'button';
+    actionButton.textContent = exercise.loggable ? 'Load to log' : 'Review';
+    actionButton.addEventListener('click', () => {
+      if (exercise.loggable) {
+        loadExerciseIntoForm(exercise);
+      } else {
+        exerciseNameInput.value = exercise.name;
+        notesInput.value = exercise.notes || '';
+        repsInput.value = '';
+        weightInput.value = '';
+        videoUrlInput.value = '';
+        repsInput.focus();
+      }
+    });
+
+    actions.appendChild(actionButton);
+    card.appendChild(actions);
+    programDetails.appendChild(card);
+  });
+}
+
+function loadExerciseIntoForm(exercise) {
+  exerciseNameInput.value = exercise.name;
+  repsInput.value = '';
+  weightInput.value = lastWeights[exercise.name] || '';
+  notesInput.value = exercise.notes || '';
+  videoUrlInput.value = '';
+  repsInput.focus();
 }
 
 function renderExercises() {
@@ -106,9 +243,15 @@ form.addEventListener('submit', (event) => {
     notes: formData.get('notes').trim(),
   };
 
+  if (newExercise.name && newExercise.weight > 0) {
+    lastWeights[newExercise.name] = newExercise.weight;
+    saveLastWeights();
+  }
+
   exercises.push(newExercise);
   saveExercises();
   renderExercises();
+  renderProgram();
   form.reset();
 });
 
@@ -121,5 +264,16 @@ clearButton.addEventListener('click', () => {
   renderExercises();
 });
 
+programButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    programButtons.forEach((btn) => btn.classList.remove('active'));
+    button.classList.add('active');
+    selectedDay = Number(button.dataset.day);
+    renderProgram();
+  });
+});
+
 loadExercises();
+loadLastWeights();
+renderProgram();
 renderExercises();

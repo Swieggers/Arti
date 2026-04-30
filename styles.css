@@ -66,6 +66,84 @@ body {
   gap: 16px;
 }
 
+.panel-copy {
+  margin: 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.day-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.program-day {
+  min-width: 96px;
+  padding: 12px 14px;
+  background: #eef4ff;
+  color: #14213d;
+  border-radius: 14px;
+  border: 1px solid transparent;
+}
+
+.program-day.active,
+.program-day:hover {
+  background: #14213d;
+  color: white;
+  border-color: #14213d;
+}
+
+.program-details {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.exercise-card {
+  border: 1px solid #e5e9f2;
+  border-radius: 18px;
+  padding: 18px;
+  background: #fcfdff;
+}
+
+.exercise-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.exercise-card-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.exercise-card-meta {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.exercise-card-body {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.exercise-card-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.form-helper {
+  margin: 0 0 18px;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
 .exercise-form {
   display: grid;
   gap: 18px;
