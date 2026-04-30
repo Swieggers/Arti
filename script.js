@@ -1,0 +1,125 @@
+const STORAGE_KEY = 'arti-exercise-log';
+const form = document.getElementById('exercise-form');
+const exerciseList = document.getElementById('exercise-list');
+const clearButton = document.getElementById('clear-button');
+
+let exercises = [];
+
+function saveExercises() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
+}
+
+function loadExercises() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  exercises = saved ? JSON.parse(saved) : [];
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderExercises() {
+  exerciseList.innerHTML = '';
+
+  if (exercises.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'empty-state';
+    empty.textContent = 'No entries yet. Add the first workout above.';
+    exerciseList.appendChild(empty);
+    return;
+  }
+
+  exercises.slice().reverse().forEach((exercise, index) => {
+    const card = document.createElement('article');
+    card.className = 'card';
+
+    const header = document.createElement('div');
+    header.className = 'card-header';
+    const title = document.createElement('h3');
+    title.textContent = exercise.name;
+    const meta = document.createElement('span');
+    meta.className = 'card-meta';
+    meta.textContent = `${formatDate(exercise.date)} · ${exercise.reps} reps · ${exercise.weight} kg`;
+
+    header.append(title, meta);
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    if (exercise.notes) {
+      const notes = document.createElement('p');
+      notes.textContent = `Notes: ${exercise.notes}`;
+      body.appendChild(notes);
+    }
+
+    if (exercise.videoUrl) {
+      const video = document.createElement('p');
+      video.innerHTML = `Video: <a href="${exercise.videoUrl}" target="_blank" rel="noreferrer">Watch how to do it</a>`;
+      body.appendChild(video);
+    }
+
+    card.appendChild(body);
+
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    if (exercise.videoUrl) {
+      const openVideo = document.createElement('a');
+      openVideo.className = 'link-button';
+      openVideo.href = exercise.videoUrl;
+      openVideo.target = '_blank';
+      openVideo.rel = 'noreferrer';
+      openVideo.textContent = 'Open video';
+      actions.appendChild(openVideo);
+    }
+
+    const removeButton = document.createElement('button');
+    removeButton.className = 'secondary-button delete-button';
+    removeButton.type = 'button';
+    removeButton.textContent = 'Delete';
+    removeButton.addEventListener('click', () => {
+      const realIndex = exercises.length - 1 - index;
+      exercises.splice(realIndex, 1);
+      saveExercises();
+      renderExercises();
+    });
+    actions.appendChild(removeButton);
+
+    card.appendChild(actions);
+    exerciseList.appendChild(card);
+  });
+}
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(form);
+  const newExercise = {
+    id: Date.now(),
+    name: formData.get('exerciseName').trim(),
+    date: new Date().toISOString(),
+    reps: Number(formData.get('reps')) || 0,
+    weight: Number(formData.get('weight')) || 0,
+    videoUrl: formData.get('videoUrl').trim(),
+    notes: formData.get('notes').trim(),
+  };
+
+  exercises.push(newExercise);
+  saveExercises();
+  renderExercises();
+  form.reset();
+});
+
+clearButton.addEventListener('click', () => {
+  if (!confirm('Clear all exercise entries?')) {
+    return;
+  }
+  exercises = [];
+  saveExercises();
+  renderExercises();
+});
+
+loadExercises();
+renderExercises();

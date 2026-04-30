@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arti Workout Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Arti Fitness</p>
+        <h1>Workout Tracker</h1>
+        <p>Log reps, weight, and exercise videos to keep Arti moving safely and consistently.</p>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Add an Exercise Entry</h2>
+      <form id="exercise-form" class="exercise-form">
+        <div class="field-row">
+          <label for="exercise-name">Exercise</label>
+          <input id="exercise-name" name="exerciseName" type="text" placeholder="e.g. Squats" required />
+        </div>
+        <div class="field-row">
+          <label for="reps">Reps</label>
+          <input id="reps" name="reps" type="number" min="1" placeholder="12" required />
+        </div>
+        <div class="field-row">
+          <label for="weight">Weight (kg)</label>
+          <input id="weight" name="weight" type="number" min="0" step="0.5" placeholder="10" required />
+        </div>
+        <div class="field-row">
+          <label for="video-url">Video URL</label>
+          <input id="video-url" name="videoUrl" type="url" placeholder="https://" />
+        </div>
+        <div class="field-row">
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes" rows="2" placeholder="Optional notes for form, breathing, pace..."></textarea>
+        </div>
+        <button type="submit" class="primary-button">Save Entry</button>
+      </form>
+    </section>
+
+    <section class="panel" id="log-panel">
+      <div class="panel-heading">
+        <h2>Exercise Log</h2>
+        <button id="clear-button" class="secondary-button">Clear All</button>
+      </div>
+      <div id="exercise-list" class="exercise-list">
+        <p class="empty-state">No entries yet. Add the first workout above.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
