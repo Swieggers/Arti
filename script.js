@@ -10,7 +10,7 @@ const repsInput = document.getElementById('reps');
 const weightInput = document.getElementById('weight');
 
 let exercises = [];
-let lastWeights = {};
+let lastStats = {};
 let selectedDay = 1;
 
 const programDays = {
@@ -63,8 +63,8 @@ function saveExercises() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
 }
 
-function saveLastWeights() {
-  localStorage.setItem(WEIGHT_KEY, JSON.stringify(lastWeights));
+function saveLastStats() {
+  localStorage.setItem(WEIGHT_KEY, JSON.stringify(lastStats));
 }
 
 function loadExercises() {
@@ -72,9 +72,9 @@ function loadExercises() {
   exercises = saved ? JSON.parse(saved) : [];
 }
 
-function loadLastWeights() {
+function loadLastStats() {
   const saved = localStorage.getItem(WEIGHT_KEY);
-  lastWeights = saved ? JSON.parse(saved) : {};
+  lastStats = saved ? JSON.parse(saved) : {};
 }
 
 function formatDate(dateString) {
@@ -111,9 +111,9 @@ function renderProgram() {
       body.appendChild(notes);
     }
 
-    if (lastWeights[exercise.name]) {
+    if (lastStats[exercise.name]) {
       const lastUsed = document.createElement('p');
-      lastUsed.textContent = `Last weight: ${lastWeights[exercise.name]} kg`;
+      lastUsed.textContent = `Last: ${lastStats[exercise.name].weight} kg for ${lastStats[exercise.name].reps} reps`;
       body.appendChild(lastUsed);
     }
 
@@ -145,8 +145,8 @@ function renderProgram() {
 
 function loadExerciseIntoForm(exercise) {
   exerciseNameInput.value = exercise.name;
-  repsInput.value = '';
-  weightInput.value = lastWeights[exercise.name] || '';
+  repsInput.value = lastStats[exercise.name]?.reps || '';
+  weightInput.value = lastStats[exercise.name]?.weight || '';
   repsInput.focus();
 }
 
@@ -223,9 +223,9 @@ function renderExercises() {
   });
 }
 
+
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-
   const formData = new FormData(form);
   const newExercise = {
     id: Date.now(),
@@ -234,12 +234,10 @@ form.addEventListener('submit', (event) => {
     reps: Number(formData.get('reps')) || 0,
     weight: Number(formData.get('weight')) || 0,
   };
-
   if (newExercise.name && newExercise.weight > 0) {
-    lastWeights[newExercise.name] = newExercise.weight;
-    saveLastWeights();
+    lastStats[newExercise.name] = { weight: newExercise.weight, reps: newExercise.reps };
+    saveLastStats();
   }
-
   exercises.push(newExercise);
   saveExercises();
   renderExercises();
@@ -266,6 +264,6 @@ programButtons.forEach((button) => {
 });
 
 loadExercises();
-loadLastWeights();
+loadLastStats();
 renderProgram();
 renderExercises();
