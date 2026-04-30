@@ -8,8 +8,6 @@ const programDetails = document.getElementById('program-details');
 const exerciseNameInput = document.getElementById('exercise-name');
 const repsInput = document.getElementById('reps');
 const weightInput = document.getElementById('weight');
-const videoUrlInput = document.getElementById('video-url');
-const notesInput = document.getElementById('notes');
 
 let exercises = [];
 let lastWeights = {};
@@ -133,10 +131,8 @@ function renderProgram() {
         loadExerciseIntoForm(exercise);
       } else {
         exerciseNameInput.value = exercise.name;
-        notesInput.value = exercise.notes || '';
         repsInput.value = '';
         weightInput.value = '';
-        videoUrlInput.value = '';
         repsInput.focus();
       }
     });
@@ -151,8 +147,6 @@ function loadExerciseIntoForm(exercise) {
   exerciseNameInput.value = exercise.name;
   repsInput.value = '';
   weightInput.value = lastWeights[exercise.name] || '';
-  notesInput.value = exercise.notes || '';
-  videoUrlInput.value = '';
   repsInput.focus();
 }
 
@@ -239,8 +233,6 @@ form.addEventListener('submit', (event) => {
     date: new Date().toISOString(),
     reps: Number(formData.get('reps')) || 0,
     weight: Number(formData.get('weight')) || 0,
-    videoUrl: formData.get('videoUrl').trim(),
-    notes: formData.get('notes').trim(),
   };
 
   if (newExercise.name && newExercise.weight > 0) {
